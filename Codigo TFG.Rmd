@@ -1,0 +1,1348 @@
+
+#CREACION DEL DF
+```{r}
+library(readxl)
+df <- read_excel("C:/Users/Paloma Menéndez/Desktop/CEU/TFG 2/df_filtrado_bueno_definitivo.xlsx")
+tail(df)
+```
+```{r}
+max(df$P_BIT)
+```
+
+
+#cambiamos nombres de EUR/USD porque da error con el /
+```{r}
+#colnames(df)[11] <-"TC_USDEUR"
+#colnames(df)[12] <-"L_USDEUR"
+#colnames(df)[13] <-"R_USDEUR"
+colnames(df) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+#COTIZACION DIARIA DE LOS ACTIVOS FINANCIEROS (repr gráfica)
+
+```{r}
+#install.packages("gridExtra")
+#install.packages("ggplot")
+library(gridExtra)
+library(ggplot2)
+```
+
+
+
+```{r}
+#FFFFFF
+grafico1 <- ggplot(df, aes(x = Fecha, y = P_BIT)) + geom_line(color = "red") + labs(title = "BITCOIN",
+       x = "FECHA",  
+       y = "COTIZACION EN DOLARES") +  
+  theme_minimal()
+
+grafico2 <- ggplot(df, aes(x = Fecha, y = P_NVDA)) + geom_line(color = "red") + labs(title = "NVIDIA",
+       x = "FECHA",  
+       y = "COTIZACION EN DOLARES") +  
+  theme_minimal()
+
+grafico3 <- ggplot(df, aes(x = Fecha, y = P_MONEX)) + geom_line(color = "red") + labs(title = "MONEX GROUP",
+       x = "FECHA",  
+       y = "COTIZACION EN DOLARES") +  
+  theme_minimal()
+
+grafico4 <- ggplot(df, aes(x = Fecha, y = TC_USDEUR)) + geom_line(color = "red") + labs(title = "TIPO CAMBIO USD/EUR",
+       x = "FECHA",  
+       y = "TIPO CAMBIO") +  
+  theme_minimal()
+
+grafico5 <- ggplot(df, aes(x = Fecha, y = P_ORO)) + geom_line(color = "red") + labs(title = "ORO",
+       x = "FECHA",  
+       y = "COTIZACION EN DOLARES") +  
+  theme_minimal()
+
+grafico6 <- ggplot(df, aes(x = Fecha, y = P_MSCI)) + geom_line(color = "red") + ggtitle("MSCI") +  labs(title = "MSCI",
+       x = "FECHA",  
+       y = "COTIZACION EN DOLARES") +  
+  theme_minimal()
+
+
+grafico1
+grafico2
+grafico3
+grafico4
+grafico5
+grafico6
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ESTADISTICOS DESCRIPTIVOS
+
+#BITCOIN
+```{r}
+#install.packages('fitdistrplus')
+library(fitdistrplus)
+descdist(data = df$P_BIT, graph = FALSE)
+CVP_BIT<- sd(df$P_BIT)/mean(df$P_BIT)*100
+CVP_BIT
+```
+#NVIDIA
+```{r}
+descdist(data = df$P_NVDA, graph = FALSE)
+CVP_NVDA<- sd(df$P_NVDA)/mean(df$P_NVDA)*100
+CVP_NVDA
+```
+
+#MONEX
+```{r}
+descdist(data = df$P_MONEX, graph = FALSE)
+CVP_MONEX<- sd(df$P_MONEX)/mean(df$P_MONEX)*100
+CVP_MONEX
+```
+
+#EUR/USD
+```{r}
+descdist(data = df$TC_USDEUR, graph = FALSE)
+CVP_USDEUR<- sd(df$TC_USDEUR)/mean(df$TC_USDEUR)*100
+CVP_USDEUR
+```
+
+#ORO
+```{r}
+descdist(data = df$P_ORO, graph = FALSE)
+CVP_ORO<- sd(df$P_ORO)/mean(df$P_ORO)*100
+CVP_ORO
+```
+
+#MSCI
+```{r}
+descdist(data = df$P_MSCI, graph = FALSE)
+CVP_MSCI<- sd(df$P_MSCI)/mean(df$P_MSCI)*100
+CVP_MSCI
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#TEST DE RAICES UNITARIAS DE DICKEY-FULLER 
+```{r}
+#install.packages("urca")
+install.packages("tseries")
+library(urca)
+library(tseries)
+```
+#BiTCOIN
+```{r}
+adf.test(df$P_BIT)
+```
+#NVIDIA
+```{r}
+adf.test(df$P_NVDA)
+```
+#MONEX
+```{r}
+adf.test(df$P_MONEX)
+```
+
+#USD/EUR
+```{r}
+adf.test(df$TC_USDEUR)
+```
+
+
+#ORO
+```{r}
+adf.test(df$P_ORO)
+```
+
+
+#MSCI
+```{r}
+adf.test(df$P_MSCI)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#REPRESENTACION DE LOS RENDIMIENTOS 
+```{r}
+grafico7 <- ggplot(df, aes(x = Fecha, y = R_BIT)) + geom_line(color = "red") + labs(title = "BITCOIN",
+       x = "FECHA",  # Cambiar la etiqueta del eje x
+       y = "COTIZACION EN DOLARES") +  # Cambiar la etiqueta del eje y
+  theme_minimal()
+
+grafico8 <- ggplot(df, aes(x = Fecha, y = R_NVDA)) + geom_line(color = "red") + labs(title = "NVIDIA",
+       x = "FECHA",  # Cambiar la etiqueta del eje x
+       y = "COTIZACION EN DOLARES") +  # Cambiar la etiqueta del eje y
+  theme_minimal()
+
+grafico9 <- ggplot(df, aes(x = Fecha, y = R_MONEX)) + geom_line(color = "red") + labs(title = "MONEX GROUP",
+       x = "FECHA",  # Cambiar la etiqueta del eje x
+       y = "COTIZACION EN DOLARES") +  # Cambiar la etiqueta del eje y
+  theme_minimal()
+
+grafico10 <- ggplot(df, aes(x = Fecha, y = R_USDEUR)) + geom_line(color = "red") + labs(title = "TIPO CAMBIO USD/EUR",
+       x = "FECHA",  # Cambiar la etiqueta del eje x
+       y = "TIPO CAMBIO") +  # Cambiar la etiqueta del eje y
+  theme_minimal()
+
+grafico11 <- ggplot(df, aes(x = Fecha, y = R_ORO)) + geom_line(color = "red") + labs(title = "ORO",
+       x = "FECHA",  # Cambiar la etiqueta del eje x
+       y = "COTIZACION EN DOLARES") +  # Cambiar la etiqueta del eje y
+  theme_minimal()
+
+grafico12 <- ggplot(df, aes(x = Fecha, y = R_MSCI)) + geom_line(color = "red") + ggtitle("MSCI") +  labs(title = "MSCI",
+       x = "FECHA",  # Cambiar la etiqueta del eje x
+       y = "COTIZACION EN DOLARES") +  # Cambiar la etiqueta del eje y
+  theme_minimal()
+
+
+
+
+
+
+grafico7
+grafico8
+grafico9
+grafico10
+grafico11
+grafico12
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ESTADISTICOS DESCRIPTIVOS DE LOS RENDIMIENTOS
+
+#BITCOIN
+```{r}
+#install.packages('fitdistrplus')
+library(fitdistrplus)
+descdist(data = df$R_BIT, graph = FALSE)
+CVP_RBIT<- sd(df$R_BIT)/mean(df$P_BIT)*100
+CVP_RBIT
+```
+#NVIDIA
+```{r}
+descdist(data = df$R_NVDA, graph = FALSE)
+CVP_RNVDA<- sd(df$R_NVDA)/mean(df$P_NVDA)*100
+CVP_RNVDA
+```
+
+#MONEX
+```{r}
+descdist(data = df$R_MONEX, graph = FALSE)
+CVP_RMONEX<- sd(df$R_MONEX)/mean(df$P_MONEX)*100
+CVP_RMONEX
+```
+
+#EUR/USD
+```{r}
+descdist(data = df$R_USDEUR, graph = FALSE)
+CVP_RUSDEUR<- sd(df$R_USDEUR)/mean(df$TC_USDEUR)*100
+CVP_RUSDEUR
+```
+
+#ORO
+```{r}
+descdist(data = df$R_ORO, graph = FALSE)
+CVP_RORO<- sd(df$R_ORO)/mean(df$P_ORO)*100
+CVP_RORO
+```
+
+#MSCI
+```{r}
+descdist(data = df$R_MSCI, graph = FALSE)
+CVP_RMSCI<- sd(df$R_MSCI)/mean(df$P_MSCI)*100
+CVP_RMSCI
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#TEST DICKEY FULLER DE LOS RENDIMIENTOS
+#BiTCOIN
+```{r}
+adf.test(df$R_BIT)
+```
+#NVIDIA
+```{r}
+adf.test(df$R_NVDA)
+```
+#MONEX
+```{r}
+adf.test(df$R_MONEX)
+```
+
+#USD/EUR
+```{r}
+adf.test(df$R_USDEUR)
+```
+
+
+#ORO
+```{r}
+adf.test(df$R_ORO)
+```
+
+
+#MSCI
+```{r}
+adf.test(df$R_MSCI)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#CORRELACION LIENAL: GRAFICOS ACR Y PACF DE LOS RENDIMIENTOS 
+```{r}
+#ELIMINAMOS PRIMER ELEMENTO DE LOS RENDIMEINTOS PORQUE ES UN NA
+df<- na.omit(df)
+
+#acf_values <- acf(df$R_BIT, plot = FALSE)$acf[-1]
+#ploti <- plot(1:length(acf_values), acf_values, type = "h", lwd = 2, col = "blue", main = "ACF - R_BIT", xlab = "Lag", ylab = "ACF")
+#ploti
+```
+
+#BITCOIN
+
+```{r}
+#ACF
+par(mar = c(5, 4, 4, 2) + 0.1)  # Ajustar el margen inferior
+
+grafico13<- pacf(df$R_BIT, plot = TRUE, main = "PACF-BITCOIN")
+grafico13
+par(mar = c(5, 4, 4, 2) + 0.1)  # Restaurar el margen inferior
+
+
+grafico14<- acf(df$R_BIT, type ="correlation", plot = TRUE, main = "ACF-BITCOIN")
+grafico14
+
+
+```
+
+#NVIDIA
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico15<- acf(df$R_NVDA, type ="correlation", plot = TRUE, main = "ACF-NVIDIA")
+grafico15
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico16<- pacf(df$R_NVDA, plot = TRUE, main = "PACF-NVIDIA")
+grafico16
+```
+
+
+#MONEX
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico17<- acf(df$R_MONEX, type ="correlation", plot = TRUE, main = "ACF-MONEX")
+grafico17
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico18<- pacf(df$R_MONEX, plot = TRUE, main = "PACF-MONEX")
+grafico18
+```
+
+
+#USD/EUR
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico19<- acf(df$R_USDEUR, type ="correlation", plot = TRUE, main = "ACF-USD/EUR")
+grafico19
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico20<- pacf(df$R_USDEUR, plot = TRUE, main = "PACF-USD/EUR")
+grafico20
+```
+
+#ORO
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico21<- acf(df$R_ORO, type ="correlation", plot = TRUE, main = "ACF-ORO")
+grafico21
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico22<- pacf(df$R_ORO, plot = TRUE, main = "PACF-ORO")
+grafico22
+```
+
+
+#MSCI
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico23<- acf(df$R_MSCI, type ="correlation", plot = TRUE, main = "ACF-MSCI")
+grafico23
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico24<- pacf(df$R_MSCI, plot = TRUE, main = "PACF-MSCI")
+grafico24
+```
+
+
+
+
+
+
+
+
+
+
+
+#GRAFICOS ACF Y PACF DE LOS RENDIMIENTOS CUADRADOS 
+```{r}
+#PACF
+par(mar = c(5, 4, 4, 2) + 0.1)  # Ajustar el margen inferior
+
+grafico25<- pacf(df$R2_BIT, plot = TRUE, main = "PACF- R^2 BITCOIN", lag.max = 100)
+grafico25
+par(mar = c(5, 4, 4, 2) + 0.1)  # Restaurar el margen inferior
+```
+
+#NVIDIA
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico26<- pacf(df$R2_NVDA, plot = TRUE, main = "PACF- R^2 NVIDIA", lag.max = 100)
+grafico26
+par(mar = c(5, 4, 4, 2) + 0.1) 
+```
+
+#MONEX
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico27<- pacf(df$R2_MONEX, plot = TRUE, main = "PACF-R^2 MONEX", lag.max = 100)
+grafico27
+par(mar = c(5, 4, 4, 2) + 0.1)
+```
+
+#USD/EUR
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico28<- pacf(df$R2_USDEUR, plot = TRUE, main = "PACF - R^2 USD/EUR", lag.max = 100)
+grafico28
+par(mar = c(5, 4, 4, 2) + 0.1)
+```
+
+#ORO
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico29<- pacf(df$R2_ORO, plot = TRUE, main = "PACF - R^2 ORO", lag.max = 100)
+grafico29
+par(mar = c(5, 4, 4, 2) + 0.1)
+```
+
+#MSCI
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1) 
+grafico29<- pacf(df$R2_MSCI, plot = TRUE, main = "PACF-R^2 MSCI", lag.max = 100)
+grafico29
+par(mar = c(5, 4, 4, 2) + 0.1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ACF Y PACF DE LOS VALORES ABSOLUTOS
+
+#BITCOIN
+```{r}
+#PACF
+par(mar = c(5, 4, 4, 2) + 0.1)  
+
+grafico30<- pacf(df$VA_BIT, plot = TRUE, main = "PACF- VA BITCOIN", lag.max = 100)
+grafico30
+par(mar = c(5, 4, 4, 2) + 0.1)  
+```
+
+#NVIDIA
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1)  
+
+grafico30<- pacf(df$VA_NVDA, plot = TRUE, main = "PACF- VA NVIDIA", lag.max = 100)
+grafico30
+par(mar = c(5, 4, 4, 2) + 0.1)  
+```
+
+#MONEX
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1)  
+
+grafico30<- pacf(df$VA_MONEX, plot = TRUE, main = "PACF- VA MONEX", lag.max = 100)
+grafico30
+par(mar = c(5, 4, 4, 2) + 0.1)  
+```
+
+#EUR/USD
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1)  
+
+grafico30<- pacf(df$VA_USDEUR, plot = TRUE, main = "PACF - VA USD/EUR", lag.max = 100)
+grafico30
+par(mar = c(5, 4, 4, 2) + 0.1)  
+```
+
+#ORO
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1)  
+
+grafico30<- pacf(df$VA_ORO, plot = TRUE, main = "PACF - VA ORO", lag.max = 100)
+grafico30
+par(mar = c(5, 4, 4, 2) + 0.1)  
+```
+
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1)  
+
+grafico30<- pacf(df$VA_MSCI, plot = TRUE, main = "PACF - VA MSCI", lag.max = 100)
+grafico30
+par(mar = c(5, 4, 4, 2) + 0.1)  
+```
+```{r}
+head(df)
+```
+
+#FORMA 1 DE CLACULAR EL ESTADISTICO Q
+```{r}
+df_cor<- df[, c(5, 10, 15, 20, 25, 30)]
+head(df_cor)
+autocorr_result <- acf(df_cor, lag.max = 40, plot = FALSE)
+#matriz_cor
+```
+
+```{r}
+coeficientes_cor <- autocorr_result$acf[2:(autocorr_result$n.used + 1)]
+resultado_prueba <- t.test(coeficientes_cor, mu = 0)
+resultado_prueba
+
+```
+En este caso, se extraen los coeficientes de autocorrelación de la salida de acf y se toman los primeros 40. Luego se realiza la prueba t sobre estos coeficientes y tambien se calcula la media de estos que en este caso es 0.03. 
+
+
+
+
+
+#FORMA 2 DE CLACULAR EL ESTADISTICO Q
+```{r}
+par(mar = c(5, 4, 4, 2) + 0.1)  
+acf(ts(df$R_BIT, frequency=1), lag.max=50)
+par(mar = c(5, 4, 4, 2) + 0.1) 
+```
+#El estadístico Portmanteau:
+#BITCOIN
+```{r}
+Box.test(df$R2_BIT, type = "Ljung-Box", lag=40)
+```
+
+#NVIDIA
+```{r}
+Box.test(df$R2_NVDA, type = "Ljung-Box", lag=40)
+```
+
+```{r}
+Box.test(df$R2_MONEX, type = "Ljung-Box", lag=40)
+```
+
+```{r}
+Box.test(df$R2_USDEUR, type = "Ljung-Box", lag=40)
+
+```
+
+```{r}
+Box.test(df$R2_ORO, type = "Ljung-Box", lag=40)
+```
+
+```{r}
+Box.test(df$R2_MSCI, type = "Ljung-Box", lag=40)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+#TEST DE NORMALIDAD: Pruena de Lilliefors (Kolmogorov-Smirnov)
+```{r}
+#install.packages("nortest")
+library(nortest)
+library(tseries)
+resultado <- jarque.bera.test(df$R_BIT)
+resultado$statistic
+```
+
+#BITCOIN
+```{r}
+jarque.bera.test(df$R_BIT)
+ET<- mean(df$R_BIT)/sd(df$R_BIT)
+ET
+```
+#NVIDIA
+```{r}
+jarque.bera.test(df$R_NVDA)
+```
+
+
+#MONEX
+```{r}
+jarque.bera.test(df$R_MONEX)
+
+```
+
+
+#USD/EUR
+```{r}
+jarque.bera.test(df$R_USDEUR)
+```
+en todos los casos se rechaza H0: la muestra no proviene de una distribucion normal
+
+#ORO
+```{r}
+jarque.bera.test(df$R_ORO)
+```
+
+
+#MSCI
+```{r}
+jarque.bera.test(df$R_MSCI)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ESTIMACION DE LOS MODELOS. 
+```{r}
+#install.packages("quantmod")
+library(quantmod)
+#install.packages("PerformanceAnalytics")
+library(PerformanceAnalytics)
+#install.packages("highcharter")
+#library(highcharter)
+library(MTS)
+library(rugarch)
+library(fGarch)
+library(ggplot2)
+```
+
+
+
+#BITCOIN
+```{r}
+garch_spec_BIT <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1, 1)),
+                         mean.model = list(armaOrder = c(0, 0)))
+
+garch_model_BIT <- ugarchfit(spec = garch_spec_BIT, data = df$R_BIT)
+garch_model_BIT
+
+```
+
+
+```{r}
+conditional_volatility_garch_bit <- sigma(garch_model_BIT)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_bit)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada BITCOIN",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal() #+scale_x_date(limits = as.Date(c("2010-01-01", "2023-12-31")), date_labels = "%Y")
+```
+
+
+
+
+#NVIDIA
+```{r}
+garch_model_NVDA<- ugarchfit(spec = garch_spec_BIT, data = df$R_NVDA)
+garch_model_NVDA
+```
+
+```{r}
+conditional_volatility_garch_NVDA <- sigma(garch_model_NVDA)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_NVDA)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada NVIDIA",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+#MONEX
+```{r}
+garch_model_MONEX<- ugarchfit(spec = garch_spec_BIT, data = df$R_MONEX)
+garch_model_MONEX
+```
+
+```{r}
+conditional_volatility_garch_MONEX <- sigma(garch_model_MONEX)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_MONEX)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada MONEX",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+#USD/EUR
+```{r}
+garch_model_USDEUR<- ugarchfit(spec = garch_spec_BIT, data = df$R_USDEUR)
+garch_model_USDEUR
+```
+
+```{r}
+conditional_volatility_garch_USDEUR <- sigma(garch_model_USDEUR)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_USDEUR)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada USD/EUR",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+#ORO
+```{r}
+garch_model_ORO<- ugarchfit(spec = garch_spec_BIT, data = df$R_ORO)
+garch_model_ORO
+```
+
+```{r}
+conditional_volatility_garch_ORO <- sigma(garch_model_ORO)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_ORO)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada ORO",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+#MSCI
+```{r}
+garch_model_MSCI<- ugarchfit(spec = garch_spec_BIT, data = df$R_MSCI)
+garch_model_MSCI
+```
+
+```{r}
+conditional_volatility_garch_MSCI <- sigma(garch_model_MSCI)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_MSCI)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada MSCI",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ESTIMACION DE LOS MODELOS GJR-GARCH
+#BITCOIN
+```{r}
+spec <- ugarchspec(variance.model = list(model = "gjrGARCH", garchOrder = c(1, 1)),
+                   mean.model = list(armaOrder = c(0, 0)))
+gjr_garch_model_BIT <- ugarchfit(spec, data = df$R_BIT)
+gjr_garch_model_BIT
+```
+
+
+
+```{r}
+conditional_volatility_gjr_bit <- sigma(gjr_garch_model_BIT)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_gjr_bit)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada BITCOIN",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+#NVIDIA
+```{r}
+gjr_garch_model_NVDA <- ugarchfit(spec, data = df$R_NVDA)
+gjr_garch_model_NVDA
+```
+
+
+```{r}
+conditional_volatility_gjr_NVDA <- sigma(gjr_garch_model_NVDA)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_gjr_NVDA)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada NVIDIA",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+
+
+#MONEX
+```{r}
+gjr_garch_model_MONEX <- ugarchfit(spec, data = df$R_MONEX)
+gjr_garch_model_MONEX
+```
+
+```{r}
+conditional_volatility_gjr_MONEX <- sigma(gjr_garch_model_MONEX)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_gjr_MONEX)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada MONEX",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+
+
+
+#USD/EUR
+```{r}
+gjr_garch_model_USDEUR <- ugarchfit(spec, data = df$R_USDEUR)
+gjr_garch_model_USDEUR
+```
+
+```{r}
+conditional_volatility_gjr_USDEUR <- sigma(gjr_garch_model_USDEUR)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_gjr_USDEUR)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada USD/EUR",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+#ORO
+```{r}
+gjr_garch_model_ORO <- ugarchfit(spec, data = df$R_ORO)
+gjr_garch_model_ORO
+```
+
+```{r}
+conditional_volatility_gjr_ORO <- sigma(gjr_garch_model_ORO)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada ORO",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+#MSCI
+```{r}
+gjr_garch_model_MSCI <- ugarchfit(spec, data = df$R_MSCI)
+gjr_garch_model_MSCI
+```
+
+
+```{r}
+conditional_volatility_gjr_MSCI <- sigma(gjr_garch_model_MSCI)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_gjr_MSCI)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Volatilidad Condicional Estimada MSCI",
+       x = "Fecha",
+       y = "Volatilidad") + geom_line(color = "red") + theme_minimal()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#REPRESENTACION DE LAS VOLATILIDADES DE LOS MODELOS GARCH Y GJR GARCH EN UN SOLO GRAFICO
+
+```{r}
+library(ggplot2)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_bit)),
+       aes(x = Date, y = Volatility)) +
+  geom_line(aes(y = conditional_volatility_gjr_bit, color = "GJR-GARCH"), size = 1) +
+  geom_line(aes(y = conditional_volatility_garch_bit, color = "GARCH"), size = 1) +
+  labs(title = "Volatilidad Condicional - GARCH vs GJR-GARCH BITCOIN",
+       x = "Tiempo",
+       y = "Volatilidad Condicional") +
+  theme_minimal() +
+  scale_color_manual(values = c("GARCH" = "blue", "GJR-GARCH" = "red"))
+
+
+
+
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_NVDA)),
+       aes(x = Date, y = Volatility)) +
+  geom_line(aes(y = conditional_volatility_gjr_NVDA, color = "GJR-GARCH"), size = 1) +
+  geom_line(aes(y = conditional_volatility_garch_NVDA, color = "GARCH"), size = 1) +
+  labs(title = "Volatilidad Condicional - GARCH vs GJR-GARCH NVIDIA",
+       x = "Tiempo",
+       y = "Volatilidad Condicional") +
+  theme_minimal() +
+  scale_color_manual(values = c("GARCH" = "blue", "GJR-GARCH" = "red"))
+```
+
+```{r}
+library(ggplot2)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_MONEX)),
+       aes(x = Date, y = Volatility)) +
+  geom_line(aes(y = conditional_volatility_gjr_MONEX, color = "GJR-GARCH"), size = 1) +
+  geom_line(aes(y = conditional_volatility_garch_MONEX, color = "GARCH"), size = 1) +
+  labs(title = "Volatilidad Condicional - GARCH vs GJR-GARCH MONEX",
+       x = "Tiempo",
+       y = "Volatilidad Condicional") +
+  theme_minimal() +
+  scale_color_manual(values = c("GARCH" = "blue", "GJR-GARCH" = "red"))
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_USDEUR)),
+       aes(x = Date, y = Volatility)) +
+  geom_line(aes(y = conditional_volatility_gjr_USDEUR, color = "GJR-GARCH"), size = 1) +
+  geom_line(aes(y = conditional_volatility_garch_USDEUR, color = "GARCH"), size = 1) +
+  labs(title = "Volatilidad Condicional - GARCH vs GJR-GARCH USD/EUR",
+       x = "Tiempo",
+       y = "Volatilidad Condicional") +
+  theme_minimal() +
+  scale_color_manual(values = c("GARCH" = "blue", "GJR-GARCH" = "red"))
+```
+
+```{r}
+library(ggplot2)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_ORO)),
+       aes(x = Date, y = Volatility)) +
+  geom_line(aes(y = conditional_volatility_gjr_ORO, color = "GJR-GARCH"), size = 1) +
+  geom_line(aes(y = conditional_volatility_garch_ORO, color = "GARCH"), size = 1) +
+  labs(title = "Volatilidad Condicional - GARCH vs GJR-GARCH ORO",
+       x = "Tiempo",
+       y = "Volatilidad Condicional") +
+  theme_minimal() +
+  scale_color_manual(values = c("GARCH" = "blue", "GJR-GARCH" = "red"))
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(conditional_volatility_garch_MSCI)),
+       aes(x = Date, y = Volatility)) +
+  geom_line(aes(y = conditional_volatility_gjr_MSCI, color = "GJR-GARCH"), size = 1) +
+  geom_line(aes(y = conditional_volatility_garch_MSCI, color = "GARCH"), size = 1) +
+  labs(title = "Volatilidad Condicional - GARCH vs GJR-GARCH MSCI",
+       x = "Tiempo",
+       y = "Volatilidad Condicional") +
+  theme_minimal() +
+  scale_color_manual(values = c("GARCH" = "blue", "GJR-GARCH" = "red"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+#DIFERENCIA DEL MODELO GARCH Y GJR GARCH
+#BITCOIN
+```{r}
+library(ggplot2)
+dif_mod_bit <- conditional_volatility_garch_bit - conditional_volatility_gjr_bit
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(dif_mod_bit)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Diferencia volatilidad modelo GARCH vs GJR-GARCH BITCOIN",
+       x = "Fecha",
+       y = "Diferencia") + geom_line(color = "blue") + theme_minimal()
+```
+#NVIDIA
+```{r}
+library(ggplot2)
+dif_mod <- conditional_volatility_garch_NVDA - conditional_volatility_gjr_NVDA
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(dif_mod)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Diferencia volatilidad modelo GARCH vs GJR-GARCH NVIDIA",
+       x = "Fecha",
+       y = "Diferencia") + geom_line(color = "blue") + theme_minimal()
+```
+
+#MONEX
+```{r}
+library(ggplot2)
+dif_mod <- conditional_volatility_garch_MONEX - conditional_volatility_gjr_MONEX
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(dif_mod)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Diferencia volatilidad modelo GARCH vs GJR-GARCH MONEX",
+       x = "Fecha",
+       y = "Diferencia") + geom_line(color = "blue") + theme_minimal()
+```
+
+#USD/EUR
+```{r}
+library(ggplot2)
+dif_mod <- conditional_volatility_garch_USDEUR - conditional_volatility_gjr_USDEUR
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(dif_mod)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Diferencia volatilidad modelo GARCH vs GJR-GARCH USD/EUR",
+       x = "Fecha",
+       y = "Diferencia") + geom_line(color = "blue") + theme_minimal()
+```
+
+ORO
+```{r}
+library(ggplot2)
+dif_mod <- conditional_volatility_garch_ORO - conditional_volatility_gjr_ORO
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(dif_mod)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Diferencia volatilidad modelo GARCH vs GJR-GARCH ORO",
+       x = "Fecha",
+       y = "Diferencia") + geom_line(color = "blue") + theme_minimal()
+```
+
+#MSCI
+```{r}
+library(ggplot2)
+dif_mod <- conditional_volatility_garch_MSCI - conditional_volatility_gjr_MSCI
+ggplot(data = data.frame(Date = df$Fecha, 
+                        Volatility = as.numeric(dif_mod)),
+       aes(x = Date, y = Volatility)) +
+  geom_line() +
+  labs(title = "Diferencia volatilidad modelo GARCH vs GJR-GARCH MSCI",
+       x = "Fecha",
+       y = "Diferencia") + geom_line(color = "blue") + theme_minimal()
+```
+
+
+```{r}
+library(readxl)
+rendimientos <- ts(read_excel("rendimientos.xlsx"))
+class(rendimientos)
+```
+```{r}
+spec <- ugarchspec(variance.model = list(model = "gjrGARCH", garchOrder = c(1, 1)),
+                   mean.model = list(armaOrder = c(0, 0)))
+fit <- ugarchfit(spec, data = rendimientos)
+fit
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#PREDICCIONES DE UN MODELO GJR GARCH 
+```{r}
+horizon <- 10
+
+gjr_forecast <- ugarchforecast(gjr_garch_model_BIT, n.ahead = horizon)
+
+# Extraer la serie temporal original y las predicciones
+original_series <- as.numeric(gjr_garch_model_BIT@fit$sigma * tail(df$R_BIT, 1))
+forecast_series <- as.numeric(gjr_forecast@forecast$sigmaFor)
+
+# Crear un dataframe para usar con ggplot2
+plot_data <- data.frame(Día = c(1:length(df$R_BIT), (length(df$R_BIT) + 1):(length(df$R_BIT) + horizon)),
+                        Valor = c(original_series, forecast_series),
+                        Tipo = rep(c("Original", "Predicción"), each = c(length(df$R_BIT), horizon)))
+
+# Crear el gráfico
+ggplot(plot_data, aes(x = Día, y = Valor, color = Tipo)) +
+  geom_line() +
+  labs(title = "Predicciones GJR-GARCH",
+       x = "Día",
+       y = "Valor") +
+  theme_minimal()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
